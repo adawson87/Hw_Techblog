@@ -1,21 +1,23 @@
 const router = require('express').Router();
-const { post, User } = require('../models');
+const { post, User, Post } = require('../models');
 const withAuth = require('../utils/auth');
 
 router.get('/', async (req, res) => {
   try {
-    // Get all posts and JOIN with user data
-    const postData = await post.findAll({
+    const postData = await Post.findAll({
+      attributes: [
+        'post_body',
+        'post_name'
+      ],
       include: [
         {
           model: User,
-          attributes: ['username'],
-        },
-      ],
+          attributes: ['username']
+        }
+      ]
     });
-
-    // Serialize data so the template can read it
-    const posts = postData.map((post) => post.get({ plain: true }));
+    const posts = postData.map(post => post.get({plain:true}))
+    console.log(posts)
 
     // Pass serialized data and session flag into template
     res.render('homepage', { 
@@ -72,7 +74,7 @@ router.get('/profile', withAuth, async (req, res) => {
 router.get('/login', (req, res) => {
   // If the user is already logged in, redirect the request to another route
   if (req.session.logged_in) {
-    res.redirect('/profile');
+    res.redirect('/dashboard');
     return;
   }
 

@@ -7,12 +7,12 @@ const withAuth= require('../../utils/auth')
 
 
 // Write Get, Post, Put and Delete Routes 
-router.post('/', withAuth, (req, res,) => {
+router.post('/', (req, res,) => {
 Post.create({
     ...req.body,
-    userId: req.session.userId
-    }) .then(res => {
-        res.json()
+    userId: req.body.user_id
+    }).then(res => {
+        res.json(res)
     }) .catch(error => {
         res.status(500).json(error)
     });
